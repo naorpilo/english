@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>English-Hebrew Vocabulary Quiz</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    background: #f9f9f9;
+    color: #333;
+  }
+  header {
+    background: #4caf50;
+    color: #fff;
+    padding: 20px;
+    text-align: center;
+  }
+  main {
+    max-width: 500px;
+    margin: 30px auto;
+    background: #fff;
+    padding: 20px;
+    border-radius: 8px;
+  }
+  .mode-selection, .quiz-container, .result-container {
+    text-align: center;
+    margin-bottom: 20px;
+  }
+  .mode-selection button, .quiz-container button, .result-container button {
+    margin: 10px;
+    padding: 10px 15px;
+    background: #4caf50;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  .mode-selection button:hover, .quiz-container button:hover, .result-container button:hover {
+    background: #45a049;
+  }
+  .question {
+    font-size: 1.2em;
+    margin-bottom: 20px;
+  }
+  .options {
+    list-style: none;
+    padding: 0;
+  }
+  .options li {
+    margin-bottom: 10px;
+  }
+  .options button {
+    width: 100%;
+    text-align: left;
+    padding: 10px;
+    background: #ececec;
+    color: #333;
+    border: 1px solid #ccc;
+  }
+  .options button:hover {
+    background: #ddd;
+  }
+  .feedback {
+    margin-top: 20px;
+    font-weight: bold;
+  }
+  .stats {
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+<header>
+  <h1>תרגול אוצר מילים אנגלית-עברית</h1>
+</header>
+<main>
+  <div class="mode-selection" id="mode-selection">
+    <h2>בחר מצב תרגול:</h2>
+    <button id="hebrew-to-english">מילה בעברית → לבחור באנגלית</button>
+    <button id="english-to-hebrew">מילה באנגלית → לבחור בעברית</button>
+  </div>
+
+  <div class="quiz-container" id="quiz-container" style="display:none;">
+    <div class="question" id="question"></div>
+    <ul class="options" id="options"></ul>
+    <div class="feedback" id="feedback"></div>
+    <div class="stats">
+      <span id="progress"></span>
+    </div>
+    <button id="next" style="display:none;">הבא</button>
+  </div>
+
+  <div class="result-container" id="result-container" style="display:none;">
+    <h2 id="final-score"></h2>
+    <button id="restart">תרגול מחדש</button>
+  </div>
+</main>
+
+<script>
+  const words = [
+    // Verbs
+    {english: "Acquire", hebrew: "לרכוש"},
+    {english: "Adapt", hebrew: "להסתגל"},
+    {english: "Advocate", hebrew: "לתמוך / לסנגר"},
+    {english: "Analyze", hebrew: "לנתח"},
+    {english: "Anticipate", hebrew: "לצפות"},
+    {english: "Appreciate", hebrew: "להעריך"},
+    {english: "Clarify", hebrew: "להבהיר"},
+    {english: "Collaborate", hebrew: "לשתף פעולה"},
+    {english: "Compare", hebrew: "להשוות"},
+    {english: "Conclude", hebrew: "להסיק / לסיים"},
+    {english: "Confirm", hebrew: "לאשר"},
+    {english: "Consider", hebrew: "לשקול"},
+    {english: "Contribute", hebrew: "לתרום"},
+    {english: "Convince", hebrew: "לשכנע"},
+    {english: "Define", hebrew: "להגדיר"},
+    {english: "Demonstrate", hebrew: "להדגים"},
+    {english: "Describe", hebrew: "לתאר"},
+    {english: "Determine", hebrew: "לקבוע"},
+    {english: "Develop", hebrew: "לפתח"},
+    {english: "Discuss", hebrew: "לדון"},
+    {english: "Distinguish", hebrew: "להבחין"},
+    {english: "Encourage", hebrew: "לעודד"},
+    {english: "Engage", hebrew: "להיות מעורב / לעסוק"},
+    {english: "Estimate", hebrew: "לאמוד"},
+    {english: "Evaluate", hebrew: "להעריך (איכות/שווי)"},
+    {english: "Explain", hebrew: "להסביר"},
+    {english: "Explore", hebrew: "לחקור / לסייר"},
+    {english: "Express", hebrew: "להביע"},
+    {english: "Identify", hebrew: "לזהות"},
+    {english: "Illustrate", hebrew: "להמחיש / לאייר"},
+    {english: "Improve", hebrew: "לשפר"},
+    {english: "Include", hebrew: "לכלול"},
+    {english: "Influence", hebrew: "להשפיע"},
+    {english: "Inspire", hebrew: "לעורר השראה"},
+    {english: "Interpret", hebrew: "לפרש"},
+    {english: "Investigate", hebrew: "לחקור לעומק"},
+    {english: "Justify", hebrew: "להצדיק"},
+    {english: "Maintain", hebrew: "לשמור על / לשמר"},
+    {english: "Manage", hebrew: "לנהל"},
+    {english: "Measure", hebrew: "למדוד"},
+
+    // Nouns
+    {english: "Achievement", hebrew: "הישג"},
+    {english: "Advantage", hebrew: "יתרון"},
+    {english: "Advice", hebrew: "עצה"},
+    {english: "Agreement", hebrew: "הסכם"},
+    {english: "Analysis", hebrew: "ניתוח"},
+    {english: "Application", hebrew: "יישום / בקשה"},
+    {english: "Approach", hebrew: "גישה"},
+    {english: "Argument", hebrew: "טיעון"},
+    {english: "Attention", hebrew: "תשומת לב"},
+    {english: "Benefit", hebrew: "תועלת"},
+    {english: "Challenge", hebrew: "אתגר"},
+    {english: "Choice", hebrew: "בחירה"},
+    {english: "Communication", hebrew: "תקשורת"},
+    {english: "Comparison", hebrew: "השוואה"},
+    {english: "Concept", hebrew: "מושג"},
+    {english: "Conclusion", hebrew: "מסקנה"},
+    {english: "Confidence", hebrew: "ביטחון (עצמי)"},
+    {english: "Connection", hebrew: "קשר"},
+    {english: "Consideration", hebrew: "שקילה / התחשבות"},
+    {english: "Contribution", hebrew: "תרומה"},
+    {english: "Decision", hebrew: "החלטה"},
+    {english: "Definition", hebrew: "הגדרה"},
+    {english: "Description", hebrew: "תיאור"},
+    {english: "Development", hebrew: "פיתוח / התפתחות"},
+    {english: "Difference", hebrew: "הבדל"},
+    {english: "Direction", hebrew: "כיוון / הנחייה"},
+    {english: "Discussion", hebrew: "דיון"},
+    {english: "Effect", hebrew: "השפעה / תוצאה"},
+    {english: "Effort", hebrew: "מאמץ"},
+    {english: "Emotion", hebrew: "רגש"},
+    {english: "Example", hebrew: "דוגמה"},
+    {english: "Experience", hebrew: "ניסיון / חוויה"},
+    {english: "Explanation", hebrew: "הסבר"},
+    {english: "Fact", hebrew: "עובדה"},
+    {english: "Goal", hebrew: "מטרה"},
+    {english: "Idea", hebrew: "רעיון"},
+    {english: "Impact", hebrew: "השפעה חזקה"},
+    {english: "Improvement", hebrew: "שיפור"},
+    {english: "Information", hebrew: "מידע"},
+    {english: "Interest", hebrew: "עניין"},
+
+    // Adjectives
+    {english: "Accurate", hebrew: "מדויק"},
+    {english: "Active", hebrew: "פעיל"},
+    {english: "Adequate", hebrew: "מספיק / הולם"},
+    {english: "Advanced", hebrew: "מתקדם"},
+    {english: "Affordable", hebrew: "בר השגה (מבחינת מחיר)"},
+    {english: "Alternative", hebrew: "חלופי"},
+    {english: "Ambitious", hebrew: "שאפתני"},
+    {english: "Basic", hebrew: "בסיסי"},
+    {english: "Capable", hebrew: "מסוגל"},
+    {english: "Careful", hebrew: "זהיר"},
+    {english: "Clear", hebrew: "ברור"},
+    {english: "Common", hebrew: "נפוץ"},
+    {english: "Complex", hebrew: "מורכב"},
+    {english: "Creative", hebrew: "יצירתי"},
+    {english: "Critical", hebrew: "קריטי / חיוני"},
+    {english: "Curious", hebrew: "סקרן"},
+    {english: "Definite", hebrew: "מוגדר / ברור"},
+    {english: "Difficult", hebrew: "קשה"},
+    {english: "Effective", hebrew: "יעיל / אפקטיבי"},
+    {english: "Efficient", hebrew: "יעיל (בחיסכון במשאבים)"}
+  ];
+
+  let quizMode = null; // "hebrewToEnglish" or "englishToHebrew"
+  let usedIndexes = []; 
+  let score = 0;
+  let currentQuestion = null;
+
+  const total = words.length;
+  const modeSelectionDiv = document.getElementById('mode-selection');
+  const quizContainer = document.getElementById('quiz-container');
+  const resultContainer = document.getElementById('result-container');
+
+  const questionElem = document.getElementById('question');
+  const optionsElem = document.getElementById('options');
+  const feedbackElem = document.getElementById('feedback');
+  const progressElem = document.getElementById('progress');
+  const nextBtn = document.getElementById('next');
+  const finalScoreElem = document.getElementById('final-score');
+
+  const hebrewToEnglishBtn = document.getElementById('hebrew-to-english');
+  const englishToHebrewBtn = document.getElementById('english-to-hebrew');
+  const restartBtn = document.getElementById('restart');
+
+  hebrewToEnglishBtn.addEventListener('click', () => {
+    quizMode = "hebrewToEnglish";
+    startQuiz();
+  });
+
+  englishToHebrewBtn.addEventListener('click', () => {
+    quizMode = "englishToHebrew";
+    startQuiz();
+  });
+
+  restartBtn.addEventListener('click', () => {
+    resetQuiz();
+    modeSelectionDiv.style.display = "block";
+    quizContainer.style.display = "none";
+    resultContainer.style.display = "none";
+  });
+
+  nextBtn.addEventListener('click', () => {
+    if(usedIndexes.length < total) {
+      showQuestion();
+    } else {
+      endQuiz();
+    }
+  });
+
+  function startQuiz() {
+    modeSelectionDiv.style.display = "none";
+    quizContainer.style.display = "block";
+    resetQuiz();
+    showQuestion();
+  }
+
+  function resetQuiz() {
+    usedIndexes = [];
+    score = 0;
+    feedbackElem.textContent = "";
+    nextBtn.style.display = "none";
+  }
+
+  function showQuestion() {
+    feedbackElem.textContent = "";
+    nextBtn.style.display = "none";
+    optionsElem.innerHTML = "";
+
+    let idx;
+    do {
+      idx = Math.floor(Math.random() * words.length);
+    } while (usedIndexes.includes(idx));
+    usedIndexes.push(idx);
+
+    currentQuestion = words[idx];
+
+    let questionWord, correctAnswer, answerOptions;
+    if (quizMode === "hebrewToEnglish") {
+      questionWord = currentQuestion.hebrew;
+      correctAnswer = currentQuestion.english;
+      answerOptions = words.map(w => w.english);
+    } else {
+      questionWord = currentQuestion.english;
+      correctAnswer = currentQuestion.hebrew;
+      answerOptions = words.map(w => w.hebrew);
+    }
+
+    let optionsSet = new Set();
+    optionsSet.add(correctAnswer);
+    while (optionsSet.size < 4) {
+      const randomOption = answerOptions[Math.floor(Math.random() * answerOptions.length)];
+      optionsSet.add(randomOption);
+    }
+
+    let finalOptions = Array.from(optionsSet);
+    shuffleArray(finalOptions);
+
+    questionElem.textContent = questionWord;
+    finalOptions.forEach(opt => {
+      const li = document.createElement('li');
+      const btn = document.createElement('button');
+      btn.textContent = opt;
+      btn.addEventListener('click', () => {
+        checkAnswer(opt, correctAnswer);
+      });
+      li.appendChild(btn);
+      optionsElem.appendChild(li);
+    });
+
+    updateProgress();
+  }
+
+  function checkAnswer(selected, correct) {
+    const buttons = optionsElem.querySelectorAll('button');
+    buttons.forEach(b => b.disabled = true);
+
+    if (selected === correct) {
+      feedbackElem.textContent = "תשובה נכונה! כל הכבוד!";
+      score++;
+    } else {
+      feedbackElem.textContent = "טעות! התשובה הנכונה היא: " + correct;
+    }
+    nextBtn.style.display = "inline-block";
+  }
+
+  function updateProgress() {
+    progressElem.textContent = `ענית על ${usedIndexes.length} מתוך ${total}`;
+  }
+
+  function endQuiz() {
+    quizContainer.style.display = "none";
+    resultContainer.style.display = "block";
+    finalScoreElem.textContent = `סיימת! הציון שלך: ${score} מתוך ${total}`;
+  }
+
+  function shuffleArray(arr) {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i+1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+  }
+</script>
+</body>
+</html>
