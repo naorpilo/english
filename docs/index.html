@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="he">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>English-Hebrew Vocabulary Quiz</title>
 <style>
@@ -10,7 +10,7 @@
     margin: 0;
     background: #f9f9f9;
     color: #333;
-    direction: rtl; /* כיוון ימין לשמאל */
+    direction: rtl;
   }
   header {
     background: #4caf50;
@@ -30,7 +30,7 @@
     margin-bottom: 20px;
   }
   .mode-selection button, .quiz-container button, .result-container button {
-    margin: 10px;
+    margin: 10px 5px;
     padding: 10px 15px;
     background: #4caf50;
     color: #fff;
@@ -76,6 +76,9 @@
   .stats {
     margin-top: 10px;
   }
+  .control-buttons {
+    margin-top: 20px;
+  }
 </style>
 </head>
 <body>
@@ -96,7 +99,11 @@
     <div class="stats">
       <span id="progress"></span>
     </div>
-    <button id="next" style="display:none;">הבא</button>
+    <div class="control-buttons">
+      <button id="know-word" style="display:none;">אני יודע מילה זו</button>
+      <button id="next" style="display:none;">הבא</button>
+      <button id="reset-words" style="display:none;">איפוס מילים</button>
+    </div>
   </div>
 
   <div class="result-container" id="result-container" style="display:none;">
@@ -218,6 +225,8 @@
   let usedIndexes = []; 
   let score = 0;
   let currentQuestion = null;
+  let knownWords = new Set(); // מילים שהמשתמש סימן כידועות
+  let filteredWords = [...words]; // רשימת מילים לאחר סינון ידועות
 
   const total = words.length;
   const modeSelectionDiv = document.getElementById('mode-selection');
@@ -230,6 +239,8 @@
   const progressElem = document.getElementById('progress');
   const nextBtn = document.getElementById('next');
   const finalScoreElem = document.getElementById('final-score');
+  const knowWordBtn = document.getElementById('know-word');
+  const resetWordsBtn = document.getElementById('reset-words');
 
   const hebrewToEnglishBtn = document.getElementById('hebrew-to-english');
   const englishToHebrewBtn = document.getElementById('english-to-hebrew');
@@ -246,6 +257,9 @@
   });
 
   restartBtn.addEventListener('click', () => {
+    // רענון מלא של התרגול
+    knownWords.clear();
+    filteredWords = [...words];
     resetQuiz();
     modeSelectionDiv.style.display = "block";
     quizContainer.style.display = "none";
@@ -253,11 +267,26 @@
   });
 
   nextBtn.addEventListener('click', () => {
-    if(usedIndexes.length < total) {
+    if(usedIndexes.length < filteredWords.length) {
       showQuestion();
     } else {
       endQuiz();
     }
+  });
+
+  knowWordBtn.addEventListener('click', () => {
+    // סימון המילה כידועה
+    if (currentQuestion) {
+      knownWords.add(currentQuestion.english);
+      knowWordBtn.style.display = "none";
+    }
+  });
+
+  resetWordsBtn.addEventListener('click', () => {
+    // איפוס המילים (מסיר את המילים הידועות מהרשימה ומתחיל מחדש)
+    filteredWords = words.filter(w => !knownWords.has(w.english));
+    resetQuiz();
+    showQuestion();
   });
 
   function startQuiz() {
@@ -265,6 +294,7 @@
     quizContainer.style.display = "block";
     resetQuiz();
     showQuestion();
+    resetWordsBtn.style.display = "inline-block";
   }
 
   function resetQuiz() {
@@ -272,6 +302,7 @@
     score = 0;
     feedbackElem.textContent = "";
     nextBtn.style.display = "none";
+    knowWordBtn.style.display = "none";
     feedbackElem.classList.remove('correct', 'incorrect');
   }
 
@@ -279,30 +310,38 @@
     feedbackElem.textContent = "";
     feedbackElem.classList.remove('correct', 'incorrect');
     nextBtn.style.display = "none";
+    knowWordBtn.style.display = "none";
     optionsElem.innerHTML = "";
+
+    if (filteredWords.length === 0) {
+      // אין מילים (כולן ידועות?)
+      endQuiz();
+      return;
+    }
 
     let idx;
     do {
-      idx = Math.floor(Math.random() * words.length);
-    } while (usedIndexes.includes(idx));
+      idx = Math.floor(Math.random() * filteredWords.length);
+    } while (usedIndexes.includes(idx) && usedIndexes.length < filteredWords.length);
+
     usedIndexes.push(idx);
 
-    currentQuestion = words[idx];
+    currentQuestion = filteredWords[idx];
 
     let questionWord, correctAnswer, answerOptions;
     if (quizMode === "hebrewToEnglish") {
       questionWord = currentQuestion.hebrew;
       correctAnswer = currentQuestion.english;
-      answerOptions = words.map(w => w.english);
+      answerOptions = filteredWords.map(w => w.english);
     } else {
       questionWord = currentQuestion.english;
       correctAnswer = currentQuestion.hebrew;
-      answerOptions = words.map(w => w.hebrew);
+      answerOptions = filteredWords.map(w => w.hebrew);
     }
 
     let optionsSet = new Set();
     optionsSet.add(correctAnswer);
-    while (optionsSet.size < 4) {
+    while (optionsSet.size < 4 && answerOptions.length > 1) {
       const randomOption = answerOptions[Math.floor(Math.random() * answerOptions.length)];
       optionsSet.add(randomOption);
     }
@@ -334,6 +373,8 @@
       feedbackElem.classList.add('correct');
       feedbackElem.textContent = "תשובה נכונה! כל הכבוד!";
       score++;
+      // כעת אפשר לסמן מילה זו כידועה
+      knowWordBtn.style.display = "inline-block";
     } else {
       feedbackElem.classList.remove('correct');
       feedbackElem.classList.add('incorrect');
@@ -343,13 +384,13 @@
   }
 
   function updateProgress() {
-    progressElem.textContent = `ענית על ${usedIndexes.length} מתוך ${total}`;
+    progressElem.textContent = `ענית על ${usedIndexes.length} מתוך ${filteredWords.length}`;
   }
 
   function endQuiz() {
     quizContainer.style.display = "none";
     resultContainer.style.display = "block";
-    finalScoreElem.textContent = `סיימת! הציון שלך: ${score} מתוך ${total}`;
+    finalScoreElem.textContent = `סיימת! הציון שלך: ${score} מתוך ${filteredWords.length}`;
   }
 
   function shuffleArray(arr) {
