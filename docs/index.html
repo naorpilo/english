@@ -2,7 +2,7 @@
 <html lang="he">
 <head>
   <meta charset="UTF-8" />
-  <title>תרגול אוצר מילים באנגלית - מיקום אקראי (Responsive)</title>
+  <title>תרגול אוצר מילים באנגלית (Responsive)</title>
   <style>
     /* עיצוב בסיסי לכל המסכים */
     * {
@@ -193,42 +193,262 @@
 </footer>
 
 <script>
-// ======= מאגר מילים לדוגמה =======
-// אפשר להוסיף כמה מילים שתרצה
+// ============ 1) מערך המילים ============
+// כל אובייקט מכיל:
+// word: "above", correctDefinition: "in a higher place", translation: "מעל", otherDefinitions: [], known: false
+// (pos, meaning וכו' - אם תרצה לערב אותם בתצוגה, אפשר, אבל כרגע לא הכרחי)
+
 const words = [
-  {
-    word: "above",
-    correctDefinition: "in a higher place",
-    translation: "מעל",
-    known: false
-  },
-  {
-    word: "account",
-    correctDefinition: "a report, a description of an event",
-    translation: "חשבון בנק, דו\"ח",
-    known: false
-  },
-  {
-    word: "acquire",
-    correctDefinition: "to get, to gain possession of",
-    translation: "להשיג, לרכוש",
-    known: false
-  },
-  {
-    word: "age",
-    correctDefinition: "period of history",
-    translation: "עידן",
-    known: false
-  },
-  {
-    word: "aged",
-    correctDefinition: "old",
-    translation: "זקן",
-    known: false
-  }
+  // דוגמה ראשונית:
+  // { word: "Word", correctDefinition: "Meaning", translation: "Translation", otherDefinitions: [], known: false },
+
+  { word: "above", correctDefinition: "in a higher place", translation: "מעל", otherDefinitions: [], known: false },
+  { word: "account", correctDefinition: "a report, a description of an event", translation: "חשבון בנק, דו\"ח", otherDefinitions: [], known: false },
+  { word: "acquire", correctDefinition: "to get, to gain possession of", translation: "להשיג, לרכוש", otherDefinitions: [], known: false },
+  { word: "acquisition", correctDefinition: "getting", translation: "רכישה", otherDefinitions: [], known: false },
+  { word: "age", correctDefinition: "period of history", translation: "עידן", otherDefinitions: [], known: false },
+  { word: "aged", correctDefinition: "old", translation: "זקן", otherDefinitions: [], known: false },
+  { word: "agriculture", correctDefinition: "farming", translation: "חקלאות", otherDefinitions: [], known: false },
+  { word: "agricultural", correctDefinition: "related to farming", translation: "חקלאי", otherDefinitions: [], known: false },
+  { word: "all of a sudden", correctDefinition: "unexpectedly", translation: "לפתע, פתאום", otherDefinitions: [], known: false },
+  { word: "altogether", correctDefinition: "entirely, completely", translation: "סך הכל", otherDefinitions: [], known: false },
+  { word: "anxious", correctDefinition: "worried, concerned", translation: "מוטרד", otherDefinitions: [], known: false },
+  { word: "anxiety", correctDefinition: "a condition of feeling uneasy or worried about what may happen", translation: "חרדה", otherDefinitions: [], known: false },
+  { word: "apparent", correctDefinition: "clearly visible, obvious", translation: "נראה לעיין", otherDefinitions: [], known: false },
+  { word: "apparently", correctDefinition: "obviously, seemingly", translation: "כנראה", otherDefinitions: [], known: false },
+  { word: "appropriate", correctDefinition: "suitable", translation: "הולם", otherDefinitions: [], known: false },
+  { word: "atmosphere", correctDefinition: "a thin layer of gases surrounding Earth", translation: "אטמוספרה", otherDefinitions: [], known: false },
+  { word: "automatically", correctDefinition: "gets done without a person's deliberate control", translation: "באופן אוטומטי", otherDefinitions: [], known: false },
+  { word: "bad", correctDefinition: "rotting", translation: "רקוב", otherDefinitions: [], known: false },
+  { word: "be in charge", correctDefinition: "take control, be the leader", translation: "להיות אחראי על", otherDefinitions: [], known: false },
+  { word: "be situated in/on/by, etc", correctDefinition: "to be in a particular place", translation: "להיות ממוקם ב", otherDefinitions: [], known: false },
+  { word: "behind", correctDefinition: "slower", translation: "מאחור", otherDefinitions: [], known: false },
+  { word: "believe in something", correctDefinition: "to think that sth is good or right", translation: "להאמין ב", otherDefinitions: [], known: false },
+  { word: "blame", correctDefinition: "to say or think that a person or thing is responsible for something bad that happened", translation: "להאשים", otherDefinitions: [], known: false },
+  { word: "block", correctDefinition: "not to let pass or see", translation: "לחסום", otherDefinitions: [], known: false },
+  { word: "brilliant", correctDefinition: "very intelligent", translation: "מבריק", otherDefinitions: [], known: false },
+  { word: "bring up somebody (or bring somebody up)", correctDefinition: "to care for a child until it is an adult", translation: "לגדל (ילד)", otherDefinitions: [], known: false },
+  { word: "calculate", correctDefinition: "to work out by using math", translation: "לחשב", otherDefinitions: [], known: false },
+  { word: "calculator", correctDefinition: "a small machine that is used for math", translation: "מחשבון", otherDefinitions: [], known: false },
+  { word: "clothing", correctDefinition: "things you wear", translation: "ביגוד", otherDefinitions: [], known: false },
+  { word: "competitive", correctDefinition: "wanting to win or to be more successful than other people", translation: "תחרותי", otherDefinitions: [], known: false },
+  { word: "competitor", correctDefinition: "one who competes against others", translation: "המתחרה", otherDefinitions: [], known: false },
+  { word: "contemporary", correctDefinition: "current, modern, from the same time", translation: "בן זמננו", otherDefinitions: [], known: false },
+  { word: "contest", correctDefinition: "competition", translation: "תחרותי", otherDefinitions: [], known: false },
+  { word: "continent", correctDefinition: "one of the seven large landmasses on the earth", translation: "יבשת", otherDefinitions: [], known: false },
+  { word: "copy", correctDefinition: "single one (book, paper)", translation: "עותק", otherDefinitions: [], known: false },
+  { word: "criterion", correctDefinition: "a standard of judgement", translation: "מדד", otherDefinitions: [], known: false },
+  { word: "cut down sth (or cut sth down)", correctDefinition: "to reduce", translation: "לצמצם", otherDefinitions: [], known: false },
+  { word: "decade", correctDefinition: "a period of 10 years", translation: "עשור", otherDefinitions: [], known: false },
+  { word: "declaration", correctDefinition: "a public statement", translation: "הצהרה,הכרזה", otherDefinitions: [], known: false },
+  { word: "declare", correctDefinition: "to make known, to state publically", translation: "להצהיר, להכריז", otherDefinitions: [], known: false },
+  { word: "degree", correctDefinition: "qualification/ unit of measurement", translation: "מידה, מעלה, תואר", otherDefinitions: [], known: false },
+  { word: "deliver", correctDefinition: "to take [something] to a person or place", translation: "לבצע משלוח", otherDefinitions: [], known: false },
+  { word: "demanding", correctDefinition: "needing a lot of your time, attention, or effort", translation: "תובעני", otherDefinitions: [], known: false },
+  { word: "detect", correctDefinition: "to discover", translation: "לגלות, להבחין", otherDefinitions: [], known: false },
+  { word: "determine", correctDefinition: "to decide", translation: "לקבוע להחליט", otherDefinitions: [], known: false },
+  { word: "differ (to disagree)", correctDefinition: "to disagree", translation: "לחלוק על", otherDefinitions: [], known: false },
+  { word: "differ (to vary widely)", correctDefinition: "to vary widely", translation: "להיות שונה", otherDefinitions: [], known: false },
+  { word: "disappointed", correctDefinition: "unhappy about the way something turned out", translation: "מאוכזב", otherDefinitions: [], known: false },
+  { word: "disappointment", correctDefinition: "feeling of sadness because something is not as good as expected", translation: "אכזבה", otherDefinitions: [], known: false },
+  { word: "divide", correctDefinition: "to separate into two or more parts", translation: "לחלק", otherDefinitions: [], known: false },
+  { word: "division", correctDefinition: "the act or process of dividing", translation: "חלוקה", otherDefinitions: [], known: false },
+  { word: "domestic", correctDefinition: "Having to do with the home or home country", translation: "של בית", otherDefinitions: [], known: false },
+  { word: "done", correctDefinition: "finished or completed", translation: "עשוי,גמור", otherDefinitions: [], known: false },
+  { word: "double", correctDefinition: "twice as much", translation: "כפול", otherDefinitions: [], known: false },
+  { word: "economical", correctDefinition: "careful about spending money or using resources", translation: "חסכני", otherDefinitions: [], known: false },
+  { word: "editor", correctDefinition: "the head of a news organization; person who chooses the articles", translation: "עורך (עיתון)", otherDefinitions: [], known: false },
+  { word: "either way", correctDefinition: "in both cases", translation: "בכל מקרה", otherDefinitions: [], known: false },
+  { word: "element", correctDefinition: "A pure substance made of only one kind of atom", translation: "יסוד (בטבע)", otherDefinitions: [], known: false },
+  { word: "emerge", correctDefinition: "to come out; appear", translation: "לבצבץ", otherDefinitions: [], known: false },
+  { word: "emotion", correctDefinition: "the feeling that is produced in response to life experiences", translation: "רגש", otherDefinitions: [], known: false },
+  { word: "emotional", correctDefinition: "showing strong feelings", translation: "רגשני", otherDefinitions: [], known: false },
+  { word: "exception", correctDefinition: "something that does not fit into a general rule", translation: "יוצא מן הכלל", otherDefinitions: [], known: false },
+  { word: "exchange", correctDefinition: "giving up something in order to receive something else", translation: "חילופין", otherDefinitions: [], known: false },
+  { word: "expected", correctDefinition: "to think something will probably happen", translation: "צפוי", otherDefinitions: [], known: false },
+  { word: "expedition", correctDefinition: "A long journey by a group to explore or do battle", translation: "משלחת מחקרית", otherDefinitions: [], known: false },
+  { word: "at the expense of", correctDefinition: "at the cost of", translation: "על חשבון", otherDefinitions: [], known: false },
+  { word: "expense", correctDefinition: "the cost of goods or services", translation: "הוצאה", otherDefinitions: [], known: false },
+  { word: "export", correctDefinition: "send (goods or services) to another country for sale.", translation: "לייצא", otherDefinitions: [], known: false },
+  { word: "expression", correctDefinition: "word or phrase", translation: "ביטוי", otherDefinitions: [], known: false },
+  { word: "extend", correctDefinition: "to hold out, to stretch, to offer", translation: "להעניק", otherDefinitions: [], known: false },
+  { word: "extreme", correctDefinition: "the furthest or highest degree of something", translation: "קיצוני", otherDefinitions: [], known: false },
+  { word: "farther/further", correctDefinition: "more far", translation: "רחוק יותר", otherDefinitions: [], known: false },
+  { word: "fed up", correctDefinition: "bored or frustrated and unhappy", translation: "נמאס (לו)", otherDefinitions: [], known: false },
+  { word: "fetch", correctDefinition: "to go after and bring back", translation: "ללכת להביא משהו/ מישהו", otherDefinitions: [], known: false },
+  { word: "final, semi-final", correctDefinition: "last, end", translation: "סופי, גמר", otherDefinitions: [], known: false },
+  { word: "fit, fitness", correctDefinition: "healthy", translation: "בכושר, כושר", otherDefinitions: [], known: false },
+  { word: "generation", correctDefinition: "", translation: "דור", otherDefinitions: [], known: false },
+  { word: "genuine", correctDefinition: "real, authentic", translation: "אמיתי, מקורי", otherDefinitions: [], known: false },
+  { word: "get rid of something", correctDefinition: "make something go away", translation: "להיפטר ממשהו", otherDefinitions: [], known: false },
+  { word: "get sth wrong", correctDefinition: "make a mistake", translation: "לטעות", otherDefinitions: [], known: false },
+  { word: "get worse", correctDefinition: "become bad", translation: "להתדרדר", otherDefinitions: [], known: false },
+  { word: "give away sth or give sth away", correctDefinition: "", translation: "לתת משהו למישהו", otherDefinitions: [], known: false },
+  { word: "go out", correctDefinition: "leave", translation: "לצאת", otherDefinitions: [], known: false },
+  { word: "hidden", correctDefinition: "not possible to see", translation: "מחובא", otherDefinitions: [], known: false },
+  { word: "highlight", correctDefinition: "show that something is important", translation: "להדגיש", otherDefinitions: [], known: false },
+  { word: "historian", correctDefinition: "someone who studies history", translation: "היסטורין", otherDefinitions: [], known: false },
+  { word: "historic", correctDefinition: "of great importance", translation: "היסטורי", otherDefinitions: [], known: false },
+  { word: "identical", correctDefinition: "the same", translation: "זהה", otherDefinitions: [], known: false },
+  { word: "immigration", correctDefinition: "moving from one country to another", translation: "הגירה", otherDefinitions: [], known: false },
+  { word: "immigrant", correctDefinition: "a person who moves from one country to another", translation: "מהגר", otherDefinitions: [], known: false },
+  { word: "import (v)", correctDefinition: "bring products into a country", translation: "לייבא", otherDefinitions: [], known: false },
+  { word: "import (n)", correctDefinition: "the act of bringing products into a country", translation: "ייבוא", otherDefinitions: [], known: false },
+  { word: "impress", correctDefinition: "make someone admire you", translation: "להרשים", otherDefinitions: [], known: false },
+  { word: "impression", correctDefinition: "an idea or opinion about someone or something", translation: "רושם", otherDefinitions: [], known: false },
+  { word: "impressive", correctDefinition: "causing people to admire it", translation: "מרשים", otherDefinitions: [], known: false },
+  { word: "incredible", correctDefinition: "amazing", translation: "לא יאומן", otherDefinitions: [], known: false },
+  { word: "incredibly", correctDefinition: "in an amazing way", translation: "באופן מדהים", otherDefinitions: [], known: false },
+  { word: "indoors", correctDefinition: "inside a building", translation: "בתוך הבית", otherDefinitions: [], known: false },
+  { word: "infection", correctDefinition: "get sick in a way that spreads", translation: "זיהום", otherDefinitions: [], known: false },
+  { word: "input", correctDefinition: "opinion", translation: "דעה", otherDefinitions: [], known: false },
+  { word: "inside", correctDefinition: "feeling", translation: "בפנים (ברגש)", otherDefinitions: [], known: false },
+  { word: "interact", correctDefinition: "behave and respond", translation: "לפעול בצורה הדדית", otherDefinitions: [], known: false },
+  { word: "interaction", correctDefinition: "communication", translation: "אינטראקציה", otherDefinitions: [], known: false },
+  { word: "interpret", correctDefinition: "understand something in your own way", translation: "לפרש", otherDefinitions: [], known: false },
+  { word: "interrupt", correctDefinition: "stop from speaking", translation: "להפריע, לקטוע", otherDefinitions: [], known: false },
+  { word: "interruption", correctDefinition: "stopping from speaking", translation: "הפרעה", otherDefinitions: [], known: false },
+  { word: "involvement", correctDefinition: "the act of taking part in someting", translation: "מעורבות", otherDefinitions: [], known: false },
+  { word: "involved", correctDefinition: "being part of something", translation: "מעורב", otherDefinitions: [], known: false },
+  { word: "involve", correctDefinition: "to include", translation: "לערב", otherDefinitions: [], known: false },
+  { word: "issue", correctDefinition: "topic, problem", translation: "נושא, סוגיה", otherDefinitions: [], known: false },
+  { word: "it looks like/as if/as though", correctDefinition: "it seems that", translation: "נראה ש...", otherDefinitions: [], known: false },
+  { word: "jam, traffic jam", correctDefinition: "something that is stuck", translation: "פקק (תנועה)", otherDefinitions: [], known: false },
+  { word: "journalist", correctDefinition: "a writer for a newspaper", translation: "עיתונאי", otherDefinitions: [], known: false },
+  { word: "judgment", correctDefinition: "The act of judging people and their actions", translation: "שיפוט", otherDefinitions: [], known: false },
+  { word: "just as bad / good / tall /clever, etc (as sb/sth)", correctDefinition: "bad/good/tall/clever, etc. in the same way", translation: "רע/טוב/גבוה/פיקח וכו' באותה מידה", otherDefinitions: [], known: false },
+  { word: "just", correctDefinition: "fair", translation: "צודק", otherDefinitions: [], known: false },
+  { word: "justice", correctDefinition: "fairness", translation: "צדק", otherDefinitions: [], known: false },
+  { word: "keen", correctDefinition: "excited about", translation: "חד/נלהב", otherDefinitions: [], known: false },
+  { word: "keep", correctDefinition: "delay", translation: "לעכב", otherDefinitions: [], known: false },
+  { word: "kit", correctDefinition: "a set of things", translation: "ערכה", otherDefinitions: [], known: false },
+  { word: "learn", correctDefinition: "remember", translation: "ללמוד, לזכור", otherDefinitions: [], known: false },
+  { word: "lecture", correctDefinition: "speech/ give a speech", translation: "הרצאה, להרצות", otherDefinitions: [], known: false },
+  { word: "light, in light of", correctDefinition: "illuminate", translation: "להדליק, לאור...", otherDefinitions: [], known: false },
+  { word: "living", correctDefinition: "to earn money", translation: "פרנסה", otherDefinitions: [], known: false },
+  { word: "logical, logic", correctDefinition: "something the mind can understand", translation: "הגיוני, הגיון", otherDefinitions: [], known: false },
+  { word: "look forward to something/doing something", correctDefinition: "be excited about something in the future", translation: "מצפה ל...", otherDefinitions: [], known: false },
+  { word: "lower", correctDefinition: "to make something not as high", translation: "להנמיך", otherDefinitions: [], known: false },
+  { word: "make sense", correctDefinition: "be logical", translation: "להיות הגיוני", otherDefinitions: [], known: false },
+  { word: "make up something or make something up, made up", correctDefinition: "to include", translation: "להיות מורכב מ", otherDefinitions: [], known: false },
+  { word: "make up your mind or make your mind up", correctDefinition: "to decide", translation: "לקבל החלטה", otherDefinitions: [], known: false },
+  { word: "mend", correctDefinition: "to fix", translation: "לתקן", otherDefinitions: [], known: false },
+  { word: "mixture", correctDefinition: "things combined", translation: "תערובת", otherDefinitions: [], known: false },
+  { word: "monthly", correctDefinition: "every month", translation: "חודשי", otherDefinitions: [], known: false },
+  { word: "mystery, mysterious", correctDefinition: "something that is not understood", translation: "תעלומה, מסתורי", otherDefinitions: [], known: false },
+  { word: "name", correctDefinition: "say the name of, mention", translation: "לתת שם, לציין", otherDefinitions: [], known: false },
+  { word: "native, native languge", correctDefinition: "from the home country", translation: "יליד, שפת אם", otherDefinitions: [], known: false },
+  { word: "neither … nor", correctDefinition: "not this and not this", translation: "לא זה ולא זה", otherDefinitions: [], known: false },
+  { word: "nightmare", correctDefinition: "bad dream", translation: "סיוט", otherDefinitions: [], known: false },
+  { word: "nonsense", correctDefinition: "something that is silly or stupid", translation: "שטויות", otherDefinitions: [], known: false },
+  { word: "not believe / understand / hear / say, etc. a word", correctDefinition: "not think something is true", translation: "לא מאמין/ מבין/ אומר מילה", otherDefinitions: [], known: false },
+  { word: "not until", correctDefinition: "not before", translation: "לא... עד ש", otherDefinitions: [], known: false },
+  { word: "occupation", correctDefinition: "job", translation: "עבודה", otherDefinitions: [], known: false },
+  { word: "occupy, occupied", correctDefinition: "fill or use a place or a period of time", translation: "לתפוס (זמן או מקום)", otherDefinitions: [], known: false },
+  { word: "oil", correctDefinition: "fuel", translation: "נפט", otherDefinitions: [], known: false },
+  { word: "on the whole", correctDefinition: "in general", translation: "בגדול,", otherDefinitions: [], known: false },
+  { word: "open, opening", correctDefinition: "start officially", translation: "פתיחה רשמית", otherDefinitions: [], known: false },
+  { word: "operate, operation", correctDefinition: "surgery", translation: "לנתח, ניתוח", otherDefinitions: [], known: false },
+  { word: "organ", correctDefinition: "part of an animal", translation: "איבר פנימי", otherDefinitions: [], known: false },
+  { word: "organization", correctDefinition: "arrangement", translation: "ארגון", otherDefinitions: [], known: false },
+  { word: "outstanding", correctDefinition: "amazing, exceptional", translation: "יוצא מן הכלל", otherDefinitions: [], known: false },
+  { word: "part-time", correctDefinition: "part of the full hours", translation: "חצי משרה", otherDefinitions: [], known: false },
+  { word: "patient, patience", correctDefinition: "able to wait", translation: "סבלן, סבלנות", otherDefinitions: [], known: false },
+  { word: "peculiar", correctDefinition: "strange", translation: "מוזר", otherDefinitions: [], known: false },
+  { word: "place", correctDefinition: "at university, in race or competition", translation: "מקום (ראשון כמו בתחרות)", otherDefinitions: [], known: false },
+  { word: "point (n)", correctDefinition: "exact time/place", translation: "נקודה (זמן או מקום)", otherDefinitions: [], known: false },
+  { word: "point (v)", correctDefinition: "to hold something so that it faces towards someone or something", translation: "לכוון", otherDefinitions: [], known: false },
+  { word: "position", correctDefinition: "situation/ location", translation: "מעמד, מצב", otherDefinitions: [], known: false },
+  { word: "potential, potentially", correctDefinition: "could be in the future", translation: "פוטנציאל", otherDefinitions: [], known: false },
+  { word: "preference", correctDefinition: "liking something more than something else", translation: "העדפה", otherDefinitions: [], known: false },
+  { word: "present", correctDefinition: "show or describe to other people", translation: "להציג (מצגת)", otherDefinitions: [], known: false },
+  { word: "pressure", correctDefinition: "stress, tension", translation: "לחץ", otherDefinitions: [], known: false },
+  { word: "prime, primary", correctDefinition: "most important, first", translation: "הכי חשוב", otherDefinitions: [], known: false },
+  { word: "principal", correctDefinition: "main; head of school", translation: "מנהל בית ספר", otherDefinitions: [], known: false },
+  { word: "promote, promotion", correctDefinition: "to get a better job in your company", translation: "לקדם, קידום", otherDefinitions: [], known: false },
+  { word: "put up with sth/sb", correctDefinition: "to accept something or someone unpleasant", translation: "להשלים (עם המציאות)", otherDefinitions: [], known: false },
+  { word: "reach", correctDefinition: "stretch and touch", translation: "להגיע", otherDefinitions: [], known: false },
+  { word: "reason", correctDefinition: "showing a fair and good judgement", translation: "הגיון", otherDefinitions: [], known: false },
+  { word: "record", correctDefinition: "store information", translation: "לתעד, להקליט", otherDefinitions: [], known: false },
+  { word: "reflect, reflection", correctDefinition: "what you see in a mirror", translation: "לשקף, השתקפות", otherDefinitions: [], known: false },
+  { word: "register, registration", correctDefinition: "sign up, signing up", translation: "להירשם, רישום", otherDefinitions: [], known: false },
+  { word: "relate (v), related (adj), relationship (n)", correctDefinition: "connect (v), connected (adj), connection (n)", translation: "להיות קשור, קשר, קשור וכו'", otherDefinitions: [], known: false },
+  { word: "relax, relaxed", correctDefinition: "calm", translation: "להירגע, רגוע", otherDefinitions: [], known: false },
+  { word: "remark", correctDefinition: "comment", translation: "להעיר, הערה", otherDefinitions: [], known: false },
+  { word: "remote", correctDefinition: "far away", translation: "רחוק", otherDefinitions: [], known: false },
+  { word: "replace, replacement", correctDefinition: "to switch, substitute", translation: "להחליף, החלפה", otherDefinitions: [], known: false },
+  { word: "rescue", correctDefinition: "to save", translation: "להציל", otherDefinitions: [], known: false },
+  { word: "respect, respectable", correctDefinition: "to admire because someone has good qualities", translation: "לכבד, מכובד", otherDefinitions: [], known: false },
+  { word: "retire, retired", correctDefinition: "end one's career", translation: "לצאת לפנסיה, פנסיה", otherDefinitions: [], known: false },
+  { word: "right", correctDefinition: "morally acceptable", translation: "נכון, צודק", otherDefinitions: [], known: false },
+  { word: "role", correctDefinition: "function, purpose", translation: "תפקיד", otherDefinitions: [], known: false },
+  { word: "room", correctDefinition: "space", translation: "מקום", otherDefinitions: [], known: false },
+  { word: "rough, roughly", correctDefinition: "not exact; not exactly", translation: "בערך", otherDefinitions: [], known: false },
+  { word: "rule", correctDefinition: "law, regulation", translation: "חוק, כלל", otherDefinitions: [], known: false },
+  { word: "rule, ruler", correctDefinition: "reign, govern", translation: "לשלוט/ שליטה, מושל", otherDefinitions: [], known: false },
+  { word: "run", correctDefinition: "to operate, manage a business", translation: "לנהל", otherDefinitions: [], known: false },
+  { word: "rush", correctDefinition: "to go quickly", translation: "למהר", otherDefinitions: [], known: false },
+  { word: "satisfy", correctDefinition: "to please", translation: "לספק, להשביע, לרצות", otherDefinitions: [], known: false },
+  { word: "satisfaction", correctDefinition: "a pleasant feeling, good enough, pleased", translation: "שביעות רצון, משביע, מרוצה", otherDefinitions: [], known: false },
+  { word: "scale", correctDefinition: "size, ratio", translation: "קנה מידה", otherDefinitions: [], known: false },
+  { word: "scene, scenery", correctDefinition: "in play, film etc", translation: "סצנה", otherDefinitions: [], known: false },
+  { word: "schedule", correctDefinition: "list of planned activities and times", translation: "מערכת שעות", otherDefinitions: [], known: false },
+  { word: "sensitive, sensitivity", correctDefinition: "quick to notice or feel", translation: "רגיש, רגישות", otherDefinitions: [], known: false },
+  { word: "service, serve", correctDefinition: "government system, department / do work that helps society (e.g., army)", translation: "שירות, לשרת (בצבא למשל)", otherDefinitions: [], known: false },
+  { word: "set", correctDefinition: "arrange/fixed, established", translation: "לקבוע, קבוע", otherDefinitions: [], known: false },
+  { word: "setting, set", correctDefinition: "book/film etc.; story; film/play", translation: "רקע, תפאורה", otherDefinitions: [], known: false },
+  { word: "shortly", correctDefinition: "soon", translation: "עוד מעט", otherDefinitions: [], known: false },
+  { word: "shut (something) down or shut down (something)", correctDefinition: "turn off", translation: "לכבות", otherDefinitions: [], known: false },
+  { word: "similarity", correctDefinition: "being almost the same", translation: "דימיון (בין דברים דומים)", otherDefinitions: [], known: false },
+  { word: "slow (something/somebody) down / up or slow", correctDefinition: "go more slowly", translation: "להאט", otherDefinitions: [], known: false },
+  { word: "so-called", correctDefinition: "known as", translation: "כביכול, לכאורה", otherDefinitions: [], known: false },
+  { word: "society, social", correctDefinition: "1 (n) a large number of people and the way they live 2(adj) living and relating", translation: "חברה, חברתי", otherDefinitions: [], known: false },
+  { word: "sooner or later", correctDefinition: "eventually", translation: "בסופו של דבר (במוקדם או במאוחר)", otherDefinitions: [], known: false },
+  { word: "spectacular", correctDefinition: "exciting to look at", translation: "מרהיב", otherDefinitions: [], known: false },
+  { word: "speech", correctDefinition: "formal talk", translation: "נאום", otherDefinitions: [], known: false },
+  { word: "spoil", correctDefinition: "to ruin", translation: "לקלקל", otherDefinitions: [], known: false },
+  { word: "start (sth) off or start off (sth)", correctDefinition: "to begin", translation: "להתחיל", otherDefinitions: [], known: false },
+  { word: "style", correctDefinition: "individual way, method etc.; in art, literature, music, etc.", translation: "סגנון", otherDefinitions: [], known: false },
+  { word: "sum up (something/somebody) or sum", correctDefinition: "describe the important facts", translation: "לסכם", otherDefinitions: [], known: false },
+  { word: "summary", correctDefinition: "a short description of the main facts", translation: "סיכום", otherDefinitions: [], known: false },
+  { word: "support, supporter", correctDefinition: "help and encourage, especially financially", translation: "לתמוך, תומך", otherDefinitions: [], known: false },
+  { word: "survive", correctDefinition: "to stay alive", translation: "לשרוד", otherDefinitions: [], known: false },
+  { word: "survival", correctDefinition: "staying alive", translation: "הישרדות, ניצול (שורד)", otherDefinitions: [], known: false },
+  { word: "take into account sth", correctDefinition: "to consider", translation: "לקחת בחשבון", otherDefinitions: [], known: false },
+  { word: "take part", correctDefinition: "participate", translation: "לקחת חלק", otherDefinitions: [], known: false },
+  { word: "take place", correctDefinition: "happen", translation: "להתרחש", otherDefinitions: [], known: false },
+  { word: "take the/this opportunity to do sth", correctDefinition: "to do something when it is available", translation: "לנצל הזדמנות", otherDefinitions: [], known: false },
+  { word: "take sb/sth seriously", correctDefinition: "to relate to in a serious way", translation: "לקחת ברצינות", otherDefinitions: [], known: false },
+  { word: "take/accept/claim responsibility for sth", correctDefinition: "being willing to be in charge of something", translation: "לקבל אחריות", otherDefinitions: [], known: false },
+  { word: "the headlines", correctDefinition: "the title of a newspaper article", translation: "כותרות (בעיתון)", otherDefinitions: [], known: false },
+  { word: "the heart of sth", correctDefinition: "the main part", translation: "לב העניין", otherDefinitions: [], known: false },
+  { word: "the main thing", correctDefinition: "the most important part", translation: "הדבר העיקרי", otherDefinitions: [], known: false },
+  { word: "the reality/realities of sth", correctDefinition: "the truth", translation: "המציאות", otherDefinitions: [], known: false },
+  { word: "theme", correctDefinition: "main subject or idea", translation: "הנושא/ המוטיב העיקרי", otherDefinitions: [], known: false },
+  { word: "to", correctDefinition: "toward, until", translation: "אל, עד", otherDefinitions: [], known: false },
+  { word: "to start with", correctDefinition: "to begin with", translation: "בתור התחלה", otherDefinitions: [], known: false },
+  { word: "treasure", correctDefinition: "something valuable", translation: "אוצר", otherDefinitions: [], known: false },
+  { word: "try", correctDefinition: "attempt", translation: "ניסיון", otherDefinitions: [], known: false },
+  { word: "turn", correctDefinition: "chance, opportunity", translation: "תור", otherDefinitions: [], known: false },
+  { word: "uncomfortable", correctDefinition: "not pleasant", translation: "לא נוח", otherDefinitions: [], known: false },
+  { word: "underneath", correctDefinition: "under or below", translation: "מתחת", otherDefinitions: [], known: false },
+  { word: "understand", correctDefinition: "know feelings; sympathy; sympathetic", translation: "להבין מישהו, להיות אמפתי", otherDefinitions: [], known: false },
+  { word: "understanding", correctDefinition: "sympathy", translation: "הבנה, אמפתיה", otherDefinitions: [], known: false },
+  { word: "undo", correctDefinition: "cancel something that was done", translation: "לבטל", otherDefinitions: [], known: false },
+  { word: "unemployed", correctDefinition: "without a job", translation: "מובטל", otherDefinitions: [], known: false },
+  { word: "unexpected", correctDefinition: "not known that it would happen", translation: "לא צפוי", otherDefinitions: [], known: false },
+  { word: "up-to-date", correctDefinition: "new, modern", translation: "מעודכן", otherDefinitions: [], known: false },
+  { word: "urgent, urgently", correctDefinition: "must be done immediately", translation: "דחוף, באופן דחוף", otherDefinitions: [], known: false },
+  { word: "use up something (or use something up)", correctDefinition: "use something until there is none left", translation: "לגמור הכל", otherDefinitions: [], known: false },
+  { word: "virtual reality", correctDefinition: "digital images that make a person feel they are inside it", translation: "מציאות מדומה", otherDefinitions: [], known: false },
+  { word: "vowel", correctDefinition: "the letters a, e, i, o, u", translation: "אות ניקוד", otherDefinitions: [], known: false },
+  { word: "waste", correctDefinition: "use too much", translation: "לבזבז, בזבוז", otherDefinitions: [], known: false },
+  { word: "wealth, wealthy", correctDefinition: "richness, rich", translation: "עושר, עשיר", otherDefinitions: [], known: false },
+  { word: "welcome", correctDefinition: "support, encourage; pleasing", translation: "לקבל בברכה", otherDefinitions: [], known: false },
+  { word: "wherever", correctDefinition: "in any place", translation: "כל מקום שהוא", otherDefinitions: [], known: false }
 ];
 
-// ======= פונקציה לערבוב מערך =======
+// ============ 2) פונקציה לערבוב מערך ============
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -237,23 +457,24 @@ function shuffleArray(array) {
   return array;
 }
 
-// ======= פונקציה ליצירת הסחות (3 הגדרות שגויות באופן אקראי) =======
+// ============ 3) פונקציה ליצירת הסחות (3 הגדרות שגויות באופן אקראי) ============
 function getRandomDistractors(wordObj, allWords) {
   // אוספים את ההגדרות הנכונות של שאר המילים
   const allDefinitions = allWords
-    .filter(w => w.word !== wordObj.word)
+    .filter(w => w.word !== wordObj.word) // מוציאים את המילה הנוכחית
     .map(w => w.correctDefinition);
 
   shuffleArray(allDefinitions);
+  // מחזירים 3 ראשונות בלבד (אם יש פחות מ-3 במאגר, יחזיר פחות).
   return allDefinitions.slice(0, 3);
 }
 
-// ======= בודק אם כולן ידועות =======
+// ============ 4) בודק אם כולן ידועות ============
 function allKnown() {
   return words.every(w => w.known);
 }
 
-// ======= מחפש אינדקס אקראי מתוך המילים הלא-ידועות =======
+// ============ 5) מוצא אינדקס אקראי מתוך המילים הלא-ידועות ============
 function getRandomUnknownIndex() {
   const unknownIndices = words
     .map((w, idx) => w.known ? -1 : idx)
@@ -266,16 +487,17 @@ function getRandomUnknownIndex() {
   return unknownIndices[randomPos];
 }
 
-// ======= עדכון הסטטוס (מונים) =======
+// ============ 6) עדכון הסטטוס (מונים) ============
 function updateStatus() {
   const knownCount = words.filter(w => w.known).length;
   document.getElementById("knownCount").textContent = knownCount;
   document.getElementById("totalCount").textContent = words.length;
 }
 
-// ======= הצגת מילה חדשה באקראי =======
+// ============ משתנה עזר לזכור איזו מילה מוצגת עכשיו ============
 let currentWordIndex = -1;
 
+// ============ 7) הצגת מילה חדשה באקראי ============
 function showWord() {
   updateStatus();
 
@@ -288,6 +510,7 @@ function showWord() {
   // מוצאים אינדקס אקראי של מילה לא ידועה
   currentWordIndex = getRandomUnknownIndex();
   if (currentWordIndex === -1) {
+    // כנראה לא נשארו מילים לא ידועות
     endPractice();
     return;
   }
@@ -303,7 +526,7 @@ function showWord() {
   const options = [wordObj.correctDefinition, ...distractors];
   shuffleArray(options);
 
-  // בונים את כפתורי האופציות
+  // בונים כפתורים לכל אופציה
   const optionsContainer = document.getElementById("optionsContainer");
   optionsContainer.innerHTML = "";
   options.forEach(definition => {
@@ -322,7 +545,7 @@ function showWord() {
   document.getElementById("nextWordBtn").style.display = "none";
 }
 
-// ======= בדיקת תשובה =======
+// ============ 8) בדיקת תשובה ============
 function checkAnswer(selected, correct) {
   const feedbackDiv = document.getElementById("answerFeedback");
   if (selected === correct) {
@@ -333,30 +556,30 @@ function checkAnswer(selected, correct) {
     feedbackDiv.textContent = "תשובה שגויה. נסה/י שוב.";
   }
 
-  // נטרול הכפתורים
+  // נטרול הכפתורים כדי שלא ניתן לשנות תשובה
   const allOptionButtons = document.querySelectorAll("#optionsContainer button");
   allOptionButtons.forEach(btn => {
     btn.disabled = true;
   });
 
-  // כפתור "למילה הבאה"
+  // הצגת כפתור "למילה הבאה"
   document.getElementById("nextWordBtn").style.display = "inline-block";
 }
 
-// ======= כפתור "אני יודע את המילה" =======
+// ============ כפתור "אני יודע/ת את המילה" ============
 document.getElementById("knowBtn").addEventListener("click", () => {
   if (currentWordIndex !== -1) {
-    words[currentWordIndex].known = true;
+    words[currentWordIndex].known = true; // סימון כידועה
   }
-  showWord();
+  showWord(); // מציגים מילה אקראית חדשה
 });
 
-// ======= כפתור "למילה הבאה" =======
+// ============ כפתור "למילה הבאה" ============
 document.getElementById("nextWordBtn").addEventListener("click", () => {
   showWord();
 });
 
-// ======= כפתור "הצג תרגום" =======
+// ============ כפתור "הצג תרגום" ============
 document.getElementById("showTranslationBtn").addEventListener("click", () => {
   if (currentWordIndex !== -1) {
     const translationDiv = document.getElementById("translationContainer");
@@ -365,7 +588,7 @@ document.getElementById("showTranslationBtn").addEventListener("click", () => {
   }
 });
 
-// ======= סיום התרגול =======
+// ============ 9) סיום התרגול ============
 function endPractice() {
   const container = document.querySelector(".container");
   const knownCount = words.filter(w => w.known).length;
@@ -375,7 +598,7 @@ function endPractice() {
   `;
 }
 
-// ======= התחלה =======
+// ============ 10) התחלה ============
 showWord();
 </script>
 
