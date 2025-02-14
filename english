@@ -435,6 +435,7 @@ const words = [
   { word: "wherever", correctDefinition: "in any place", translation: "כל מקום שהוא", otherDefinitions: [], known: false }
 ];
 
+// Utility to shuffle array in-place
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -443,8 +444,12 @@ function shuffleArray(array) {
   return array;
 }
 
+// Picks 3 random definitions from other words
 function getRandomDistractors(wordObj, allWords) {
-  const allDefinitions = allWords.filter(w => w.word !== wordObj.word).map(w => w.correctDefinition);
+  const allDefinitions = allWords
+    .filter(w => w.word !== wordObj.word)
+    .map(w => w.correctDefinition);
+
   shuffleArray(allDefinitions);
   return allDefinitions.slice(0, 3);
 }
@@ -453,8 +458,12 @@ function allKnown() {
   return words.every(w => w.known);
 }
 
+// Returns a random index of an unknown word, or -1 if none left
 function getRandomUnknownIndex() {
-  const unknownIndices = words.map((w, idx) => w.known ? -1 : idx).filter(i => i !== -1);
+  const unknownIndices = words
+    .map((w, idx) => w.known ? -1 : idx)
+    .filter(i => i !== -1);
+
   if (unknownIndices.length === 0) {
     return -1;
   }
@@ -462,6 +471,7 @@ function getRandomUnknownIndex() {
   return unknownIndices[randomPos];
 }
 
+// Update the status counts (known vs total)
 function updateStatus() {
   const knownCount = words.filter(w => w.known).length;
   document.getElementById("knownCount").textContent = knownCount;
@@ -470,8 +480,11 @@ function updateStatus() {
 
 let currentWordIndex = -1;
 
+// Shows a new random unknown word
 function showWord() {
   updateStatus();
+  
+  // If all known, or none unknown, end practice
   if (allKnown()) {
     endPractice();
     return;
@@ -481,12 +494,17 @@ function showWord() {
     endPractice();
     return;
   }
+
+  // Display the chosen word
   const wordObj = words[currentWordIndex];
   document.getElementById("wordDisplay").textContent = wordObj.word;
   document.getElementById("answerFeedback").textContent = "";
+
+  // Create multiple-choice options
   const distractors = getRandomDistractors(wordObj, words);
   const options = [wordObj.correctDefinition, ...distractors];
   shuffleArray(options);
+
   const optionsContainer = document.getElementById("optionsContainer");
   optionsContainer.innerHTML = "";
   options.forEach(definition => {
@@ -497,6 +515,8 @@ function showWord() {
     });
     optionsContainer.appendChild(btn);
   });
+
+  // Hide translation & Next Word button at the start
   const translationDiv = document.getElementById("translationContainer");
   translationDiv.style.display = "none";
   translationDiv.textContent = "";
@@ -512,13 +532,15 @@ function checkAnswer(selected, correct) {
     feedbackDiv.style.color = "red";
     feedbackDiv.textContent = "תשובה שגויה. התשובה הנכונה היא: " + correct;
   }
-  const allOptionButtons = document.querySelectorAll("#optionsContainer button");
-  allOptionButtons.forEach(btn => {
+  // Disable all option buttons
+  document.querySelectorAll("#optionsContainer button").forEach(btn => {
     btn.disabled = true;
   });
+  // Show the "Next Word" button
   document.getElementById("nextWordBtn").style.display = "inline-block";
 }
 
+// If the user knows the current word, mark it as known & load next
 document.getElementById("knowBtn").addEventListener("click", () => {
   if (currentWordIndex !== -1) {
     words[currentWordIndex].known = true;
@@ -526,8 +548,35 @@ document.getElementById("knowBtn").addEventListener("click", () => {
   showWord();
 });
 
+// Move to the next word
 document.getElementById("nextWordBtn").addEventListener("click", () => {
   showWord();
 });
 
-document.getElementById("showTranslationBtn").addEventListener("c
+// Show translation
+document.getElementById("showTranslationBtn").addEventListener("click", () => {
+  const translationDiv = document.getElementById("translationContainer");
+  if (currentWordIndex === -1) return; // Edge case check
+  
+  const wordObj = words[currentWordIndex];
+  translationDiv.textContent = wordObj.translation;
+  translationDiv.style.display = "block";
+});
+
+// Function called when all words are known or no unknown left
+function endPractice() {
+  document.getElementById("wordDisplay").textContent = "כל הכבוד! למדת את כל המילים או אין יותר מילים לתרגל.";
+  document.getElementById("optionsContainer").innerHTML = "";
+  document.getElementById("answerFeedback").textContent = "";
+  document.getElementById("translationContainer").style.display = "none";
+  document.getElementById("translationContainer").textContent = "";
+  document.getElementById("nextWordBtn").style.display = "none";
+  // Optional: disable "I know this word" button if you'd like
+  // document.getElementById("knowBtn").disabled = true;
+}
+
+// Initialize first word on page load
+showWord();
+</script>
+</body>
+</html>
