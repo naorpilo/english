@@ -4,7 +4,6 @@
   <meta charset="UTF-8" />
   <title>תרגול אוצר מילים באנגלית (Responsive)</title>
   <style>
-    /* עיצוב בסיסי לכל המסכים */
     * {
       box-sizing: border-box;
     }
@@ -30,7 +29,7 @@
     .container {
       background: #fff;
       margin: 1rem auto;
-      max-width: 600px;  /* גודל מירבי למסך רחב */
+      max-width: 600px;
       padding: 1.5rem;
       border-radius: 8px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
@@ -80,7 +79,7 @@
       margin-top: 0.5rem;
       font-weight: bold;
       text-align: center;
-      min-height: 1.5em; /* כדי שלא יקפוץ */
+      min-height: 1.5em;
     }
 
     .translation {
@@ -137,7 +136,6 @@
       color: #666;
     }
 
-    /* מדיה קווארי למסכים צרים יותר (טלפונים) */
     @media (max-width: 600px) {
       header h1 {
         font-size: 1.5rem;
@@ -158,7 +156,6 @@
         padding: 0.5rem;
       }
     }
-
   </style>
 </head>
 <body>
@@ -175,10 +172,8 @@
   <div class="word" id="wordDisplay"></div>
   <div class="options" id="optionsContainer"></div>
 
-  <!-- כאן תוצג התשובה הנכונה/שגויה -->
   <div id="answerFeedback"></div>
 
-  <!-- תרגום בעברית (מוסתר בהתחלה) -->
   <div class="translation" id="translationContainer"></div>
   
   <div class="actions">
@@ -193,15 +188,7 @@
 </footer>
 
 <script>
-// ============ 1) מערך המילים ============
-// כל אובייקט מכיל:
-// word: "above", correctDefinition: "in a higher place", translation: "מעל", otherDefinitions: [], known: false
-// (pos, meaning וכו' - אם תרצה לערב אותם בתצוגה, אפשר, אבל כרגע לא הכרחי)
-
 const words = [
-  // דוגמה ראשונית:
-  // { word: "Word", correctDefinition: "Meaning", translation: "Translation", otherDefinitions: [], known: false },
-
   { word: "above", correctDefinition: "in a higher place", translation: "מעל", otherDefinitions: [], known: false },
   { word: "account", correctDefinition: "a report, a description of an event", translation: "חשבון בנק, דו\"ח", otherDefinitions: [], known: false },
   { word: "acquire", correctDefinition: "to get, to gain possession of", translation: "להשיג, לרכוש", otherDefinitions: [], known: false },
@@ -448,7 +435,6 @@ const words = [
   { word: "wherever", correctDefinition: "in any place", translation: "כל מקום שהוא", otherDefinitions: [], known: false }
 ];
 
-// ============ 2) פונקציה לערבוב מערך ============
 function shuffleArray(array) {
   for (let i = array.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
@@ -457,76 +443,50 @@ function shuffleArray(array) {
   return array;
 }
 
-// ============ 3) פונקציה ליצירת הסחות (3 הגדרות שגויות באופן אקראי) ============
 function getRandomDistractors(wordObj, allWords) {
-  // אוספים את ההגדרות הנכונות של שאר המילים
-  const allDefinitions = allWords
-    .filter(w => w.word !== wordObj.word) // מוציאים את המילה הנוכחית
-    .map(w => w.correctDefinition);
-
+  const allDefinitions = allWords.filter(w => w.word !== wordObj.word).map(w => w.correctDefinition);
   shuffleArray(allDefinitions);
-  // מחזירים 3 ראשונות בלבד (אם יש פחות מ-3 במאגר, יחזיר פחות).
   return allDefinitions.slice(0, 3);
 }
 
-// ============ 4) בודק אם כולן ידועות ============
 function allKnown() {
   return words.every(w => w.known);
 }
 
-// ============ 5) מוצא אינדקס אקראי מתוך המילים הלא-ידועות ============
 function getRandomUnknownIndex() {
-  const unknownIndices = words
-    .map((w, idx) => w.known ? -1 : idx)
-    .filter(i => i !== -1);
-
+  const unknownIndices = words.map((w, idx) => w.known ? -1 : idx).filter(i => i !== -1);
   if (unknownIndices.length === 0) {
-    return -1; // אין עוד מילים לא ידועות
+    return -1;
   }
   const randomPos = Math.floor(Math.random() * unknownIndices.length);
   return unknownIndices[randomPos];
 }
 
-// ============ 6) עדכון הסטטוס (מונים) ============
 function updateStatus() {
   const knownCount = words.filter(w => w.known).length;
   document.getElementById("knownCount").textContent = knownCount;
   document.getElementById("totalCount").textContent = words.length;
 }
 
-// ============ משתנה עזר לזכור איזו מילה מוצגת עכשיו ============
 let currentWordIndex = -1;
 
-// ============ 7) הצגת מילה חדשה באקראי ============
 function showWord() {
   updateStatus();
-
-  // אם הכל ידוע => סיום
   if (allKnown()) {
     endPractice();
     return;
   }
-
-  // מוצאים אינדקס אקראי של מילה לא ידועה
   currentWordIndex = getRandomUnknownIndex();
   if (currentWordIndex === -1) {
-    // כנראה לא נשארו מילים לא ידועות
     endPractice();
     return;
   }
-
   const wordObj = words[currentWordIndex];
-  
-  // מציגים את המילה
   document.getElementById("wordDisplay").textContent = wordObj.word;
   document.getElementById("answerFeedback").textContent = "";
-  
-  // מכינים 4 אופציות (נכונה + 3 הסחות)
   const distractors = getRandomDistractors(wordObj, words);
   const options = [wordObj.correctDefinition, ...distractors];
   shuffleArray(options);
-
-  // בונים כפתורים לכל אופציה
   const optionsContainer = document.getElementById("optionsContainer");
   optionsContainer.innerHTML = "";
   options.forEach(definition => {
@@ -537,15 +497,12 @@ function showWord() {
     });
     optionsContainer.appendChild(btn);
   });
-
-  // מסתירים את התרגום + כפתור "למילה הבאה"
   const translationDiv = document.getElementById("translationContainer");
   translationDiv.style.display = "none";
   translationDiv.textContent = "";
   document.getElementById("nextWordBtn").style.display = "none";
 }
 
-// ============ 8) בדיקת תשובה ============
 function checkAnswer(selected, correct) {
   const feedbackDiv = document.getElementById("answerFeedback");
   if (selected === correct) {
@@ -553,54 +510,24 @@ function checkAnswer(selected, correct) {
     feedbackDiv.textContent = "תשובה נכונה! כל הכבוד.";
   } else {
     feedbackDiv.style.color = "red";
-    feedbackDiv.textContent = "תשובה שגויה. נסה/י שוב.";
+    feedbackDiv.textContent = "תשובה שגויה. התשובה הנכונה היא: " + correct;
   }
-
-  // נטרול הכפתורים כדי שלא ניתן לשנות תשובה
   const allOptionButtons = document.querySelectorAll("#optionsContainer button");
   allOptionButtons.forEach(btn => {
     btn.disabled = true;
   });
-
-  // הצגת כפתור "למילה הבאה"
   document.getElementById("nextWordBtn").style.display = "inline-block";
 }
 
-// ============ כפתור "אני יודע/ת את המילה" ============
 document.getElementById("knowBtn").addEventListener("click", () => {
   if (currentWordIndex !== -1) {
-    words[currentWordIndex].known = true; // סימון כידועה
+    words[currentWordIndex].known = true;
   }
-  showWord(); // מציגים מילה אקראית חדשה
+  showWord();
 });
 
-// ============ כפתור "למילה הבאה" ============
 document.getElementById("nextWordBtn").addEventListener("click", () => {
   showWord();
 });
 
-// ============ כפתור "הצג תרגום" ============
-document.getElementById("showTranslationBtn").addEventListener("click", () => {
-  if (currentWordIndex !== -1) {
-    const translationDiv = document.getElementById("translationContainer");
-    translationDiv.textContent = words[currentWordIndex].translation;
-    translationDiv.style.display = "block";
-  }
-});
-
-// ============ 9) סיום התרגול ============
-function endPractice() {
-  const container = document.querySelector(".container");
-  const knownCount = words.filter(w => w.known).length;
-  container.innerHTML = `
-    <h2 style="text-align:center;">סיימת את התרגול!</h2>
-    <p style="text-align:center;">למדת בהצלחה ${knownCount} מילים מתוך ${words.length}.</p>
-  `;
-}
-
-// ============ 10) התחלה ============
-showWord();
-</script>
-
-</body>
-</html>
+document.getElementById("showTranslationBtn").addEventListener("c
